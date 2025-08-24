@@ -9,10 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
 
-  <!-- Chart.js -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+
 
   <!-- Flatpickr for date picker -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
@@ -76,28 +73,7 @@
       color: #dc2626;
     }
 
-    /* Charts Section */
-    .charts-section {
-      display: grid;
-      grid-template-columns: 2fr 1fr;
-      gap: 20px;
-      margin-bottom: 30px;
-    }
 
-    .chart-card {
-      background: #fff;
-      border: 1px solid #e5e7eb;
-      border-radius: 12px;
-      padding: 20px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-
-    .chart-title {
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: #1f2937;
-      margin-bottom: 15px;
-    }
 
     /* Worklist Section */
     .worklist-section {
@@ -481,10 +457,6 @@
 
     /* Responsive Design */
     @media (max-width: 768px) {
-      .charts-section {
-        grid-template-columns: 1fr;
-      }
-
       .worklist-filters {
         flex-direction: column;
         align-items: stretch;
@@ -588,18 +560,7 @@
       </div>
     </section>
 
-    <!-- Charts Section -->
-    <section class="charts-section">
-      <div class="chart-card">
-        <div class="chart-title" data-ar="اتجاهات وحجم الشكاوى (آخر 30 يوم)" data-en="Complaints Trends & Volume (Last 30 Days)">اتجاهات وحجم الشكاوى (آخر 30 يوم)</div>
-        <canvas id="trendsChart" width="400" height="200"></canvas>
-      </div>
 
-      <div class="chart-card">
-        <div class="chart-title" data-ar="توزيع الحالات" data-en="Status Distribution">توزيع الحالات</div>
-        <canvas id="statusChart" width="200" height="200"></canvas>
-      </div>
-    </section>
 
     <!-- Complaint Worklist -->
     <section class="worklist-section">

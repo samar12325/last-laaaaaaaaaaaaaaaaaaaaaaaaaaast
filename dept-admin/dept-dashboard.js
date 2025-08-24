@@ -7,9 +7,7 @@ let userDepartmentId = null;
 let currentComplaintId = null;
 let currentStatus = null;
 
-// Charts
-let trendsChart = null;
-let statusChart = null;
+
 
 // Check if user is Department Admin (RoleID = 3)
 function checkDepartmentAdminAccess() {
@@ -114,121 +112,7 @@ function updateChangeIndicator(elementId, change) {
   }
 }
 
-// Chart Functions
-async function loadCharts() {
-  await loadTrendsChart();
-  await loadStatusChart();
-}
 
-async function loadTrendsChart() {
-  try {
-    const response = await fetch(`${API_BASE_URL}/dept-admin/dashboard/trends/${userDepartmentId}`, {
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
-      }
-    });
-    
-    if (response.ok) {
-      const data = await response.json();
-      renderTrendsChart(data.data || data || []);
-    }
-  } catch (error) {
-    console.error('Error loading trends chart:', error);
-  }
-}
-
-function renderTrendsChart(data) {
-  const ctx = document.getElementById('trendsChart').getContext('2d');
-  
-  if (trendsChart) {
-    trendsChart.destroy();
-  }
-
-  const labels = data.map(item => item.date);
-  const values = data.map(item => item.count);
-
-  trendsChart = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: labels,
-      datasets: [{
-        label: currentLang === 'ar' ? 'عدد الشكاوى' : 'Complaints Count',
-        data: values,
-        borderColor: '#3b82f6',
-        backgroundColor: 'rgba(59, 130, 246, 0.1)',
-        tension: 0.4,
-        fill: true
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: {
-          display: false
-        }
-      },
-      scales: {
-        y: {
-          beginAtZero: true,
-          ticks: {
-            stepSize: 1
-          }
-        }
-      }
-    }
-  });
-}
-
-async function loadStatusChart() {
-  try {
-    const response = await fetch(`${API_BASE_URL}/dept-admin/dashboard/status-distribution/${userDepartmentId}`, {
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
-      }
-    });
-    
-    if (response.ok) {
-      const data = await response.json();
-      renderStatusChart(data.data || data || []);
-    }
-  } catch (error) {
-    console.error('Error loading status chart:', error);
-  }
-}
-
-function renderStatusChart(data) {
-  const ctx = document.getElementById('statusChart').getContext('2d');
-  
-  if (statusChart) {
-    statusChart.destroy();
-  }
-
-  const labels = data.map(item => item.status);
-  const values = data.map(item => item.count);
-  const colors = ['#3b82f6', '#f59e0b', '#10b981', '#6b7280'];
-
-  statusChart = new Chart(ctx, {
-    type: 'doughnut',
-    data: {
-      labels: labels,
-      datasets: [{
-        data: values,
-        backgroundColor: colors,
-        borderWidth: 0
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: {
-          position: 'bottom'
-        }
-      }
-    }
-  });
-}
 
 // Worklist Functions
 async function loadWorklist() {
@@ -546,7 +430,6 @@ async function confirmAssignment() {
       closeModal('assignmentModal');
       loadWorklist();
       loadKPIs();
-      loadCharts();
       showSuccessMessage(currentLang === 'ar' ? 'تم توزيع الشكوى بنجاح' : 'Complaint assigned successfully');
     } else {
       const error = await response.json();
@@ -595,7 +478,6 @@ async function confirmStatusChange() {
       closeModal('statusModal');
       loadWorklist();
       loadKPIs();
-      loadCharts();
       showSuccessMessage(currentLang === 'ar' ? 'تم تغيير الحالة بنجاح' : 'Status changed successfully');
     } else {
       const error = await response.json();
@@ -666,7 +548,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Load all dashboard data
   loadKPIs();
-  loadCharts();
   loadWorklist();
   loadTeam();
   loadSLAAlerts();
