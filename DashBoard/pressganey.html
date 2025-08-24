@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>مؤشر بريسيبي</title>
+
+  <!-- Tailwind CSS -->
+  <link rel="stylesheet" href="pressganey.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+  <!-- Chart.js + Plugins -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+
+  <!-- Excel Import -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+  <!-- Export PDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+
+<body class="flex h-screen overflow-hidden lang-ar">
+  <!-- Header -->
+  <header class="header">
+    <div class="header-content">
+      <div class="header-title" data-ar="عُــــــونَك" data-en="AOUNAK">عُــــــونَك</div>
+      <img src="/icon/hospital-logo.png" alt="شعار المستشفى" class="header-logo">
+      <button id="langToggle" class="lang-toggle-btn">
+        <img src="/icon/lang.png" alt="language" class="lang-icon" />
+        <span id="langText">العربية | English</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Sidebar -->
+  <aside>
+    <ul class="sidebar-menu">
+      <li><a href="/login/home.html" class="menu-link" data-ar="الصفحة الرئيسية" data-en="Home Page">الصفحة الرئيسية</a></li>
+      <li><a href="overview.html" class="menu-link" data-ar="نظرة عامة" data-en="Overview">نظرة عامة</a></li>
+      <li><a href="report-937.html" class="menu-link" data-ar="مؤشر بلاغات 937" data-en="937 Report Index">مؤشر بلاغات 937</a></li>
+      <li><a href="misconduct.html" class="menu-link" data-ar="بلاغات سوء التعامل" data-en="Misconduct Reports">بلاغات سوء التعامل</a></li>
+      <li><a href="pressganey.html" class="menu-link active" data-ar="مؤشر بريسيبي" data-en="Press Ganey Index">مؤشر بريسيبي</a></li>
+      <li><a href="inperson-complaints.html" class="menu-link" data-ar="مؤشر الشكاوى الحضورية" data-en="In-person Complaints">مؤشر الشكاوى الحضورية</a></li>
+      <li><a href="secret-visitor.html" class="menu-link" data-ar="ملاحظات الزائر السري" data-en="Secret Visitor Notes">ملاحظات الزائر السري</a></li>
+      <li><a href="general-requests.html" class="menu-link" data-ar="مؤشر الطلبات العامة" data-en="General Requests Index">مؤشر الطلبات العامة</a></li>
+    </ul>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="flex-1 flex flex-col p-8 overflow-auto" style="margin-right: 250px; margin-top: 75px;">
+    
+    <!-- شريط التحكم -->
+    <div class="flex flex-wrap gap-3 items-center justify-center mb-6">
+      <input id="excelInput" type="file" multiple accept=".xlsx,.xls" class="hidden">
+      <button id="importExcelBtn" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-5 rounded-full shadow flex items-center">
+        <i class="fas fa-file-excel ml-2"></i>
+        <span data-ar="استيراد ملفات إكسل" data-en="Import Excel Files">استيراد ملفات إكسل</span>
+      </button>
+
+      <button id="saveToServerBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-5 rounded-full shadow flex items-center">
+        <i class="fas fa-save ml-2"></i>
+        <span data-ar="حفظ (محليًا)" data-en="Save (Local)">حفظ (محليًا)</span>
+      </button>
+    </div>
+
+    <!-- الكروت -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+      <div class="bg-white rounded-lg shadow-md p-6 flex flex-col items-center justify-center text-center">
+        <p class="text-sm text-gray-500 mb-2" data-ar="إجمالي الأقسام التي بلغت نسبة تنفيذ الاستبيان" data-en="Total departments that reached survey completion rate">إجمالي الأقسام التي بلغت نسبة تنفيذ الاستبيان</p>
+        <p class="text-4xl font-bold text-blue-600" id="totalDepartmentsSurvey">0</p>
+      </div>
+      <div class="bg-white rounded-lg shadow-md p-6 flex flex-col items-center justify-center text-center">
+        <p class="text-sm text-gray-500 mb-2" data-ar="متوسط نتيجة الرضا العام للمستشفى" data-en="Average hospital general satisfaction score">متوسط نتيجة الرضا العام للمستشفى</p>
+        <p class="text-4xl font-bold text-green-600" id="averageSatisfactionScore">0.0</p>
+      </div>
+    </div>
+<!-- 🔹 الفلاتر (فوق المربع الكبير) -->
+<div class="flex justify-end gap-3 mb-4">
+  <select id="quarterFilter" class="border rounded-lg px-3 py-2 text-gray-700">
+    <option value="" selected hidden>اختر الربع</option>
+    <option value="Q1">الربع الأول</option>
+    <option value="Q2">الربع الثاني</option>
+    <option value="Q3">الربع الثالث</option>
+    <option value="Q4">الربع الرابع</option>
+  </select>
+
+  <select id="yearFilter" class="border rounded-lg px-3 py-2 text-gray-700">
+    <option value="" selected hidden>اختر السنة</option>
+    <option value="2023">2023</option>
+    <option value="2024">2024</option>
+    <option value="2025">2025</option>
+    <option value="2026">2026</option>
+    <option value="2027">2027</option>
+  </select>
+</div>
+
+<!-- المربع الكبير -->
+<div class="bg-white rounded-lg shadow-md p-6 mb-8">
+  <h2 class="text-xl font-semibold text-gray-800 mb-6 text-center">
+    نسبة الرضا العام للمستشفى
+  </h2>
+  <div class="chart-row">
+    <div class="relative w-64 h-64"><canvas id="overallSatisfactionChart"></canvas></div>
+    <div class="legend-side" id="legend-overall">
+      <div class="legend-item">
+        <span class="legend-left"><span class="legend-dot" style="background:#22C55E"></span>راضي</span>
+        <span class="legend-pct" id="overall-satisfied">0%</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-left"><span class="legend-dot" style="background:#EF4444"></span>غير راضي</span>
+        <span class="legend-pct" id="overall-notSatisfied">0%</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    <!-- الدوائر حسب القسم -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+      
+      <!-- مثال: الطب المنزلي -->
+      <div class="bg-white rounded-lg shadow-md p-4">
+        <h3 class="text-lg font-semibold text-gray-800 mb-4 text-center">الطب المنزلي</h3>
+        <div class="chart-row">
+          <div class="relative w-36 h-36 mx-auto"><canvas id="homeMedicineChart"></canvas></div>
+          <div class="legend-side">
+            <div class="legend-item">
+              <span class="legend-left"><span class="legend-dot" style="background:#22C55E"></span>راضي</span>
+              <span class="legend-pct" id="homeMedicine-satisfied">0%</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-left"><span class="legend-dot" style="background:#EF4444"></span>غير راضي</span>
+              <span class="legend-pct" id="homeMedicine-notSatisfied">0%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- الأشعة -->
+      <div class="bg-white rounded-lg shadow-md p-4">
+        <h3 class="text-lg font-semibold text-gray-800 mb-4 text-center">الأشعة</h3>
+        <div class="chart-row">
+          <div class="relative w-36 h-36 mx-auto"><canvas id="radiologyChart"></canvas></div>
+          <div class="legend-side">
+            <div class="legend-item">
+              <span class="legend-left"><span class="legend-dot" style="background:#22C55E"></span>راضي</span>
+              <span class="legend-pct" id="radiology-satisfied">0%</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-left"><span class="legend-dot" style="background:#EF4444"></span>غير راضي</span>
+              <span class="legend-pct" id="radiology-notSatisfied">0%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- العيادات الخارجية -->
+      <div class="bg-white rounded-lg shadow-md p-4">
+        <h3 class="text-lg font-semibold text-gray-800 mb-4 text-center">العيادات الخارجية</h3>
+        <div class="chart-row">
+          <div class="relative w-36 h-36 mx-auto"><canvas id="outpatientChart"></canvas></div>
+          <div class="legend-side">
+            <div class="legend-item">
+              <span class="legend-left"><span class="legend-dot" style="background:#22C55E"></span>راضي</span>
+              <span class="legend-pct" id="outpatient-satisfied">0%</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-left"><span class="legend-dot" style="background:#EF4444"></span>غير راضي</span>
+              <span class="legend-pct" id="outpatient-notSatisfied">0%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- الأسنان -->
+      <div class="bg-white rounded-lg shadow-md p-4">
+        <h3 class="text-lg font-semibold text-gray-800 mb-4 text-center">الأسنان</h3>
+        <div class="chart-row">
+          <div class="relative w-36 h-36 mx-auto"><canvas id="dentistryChart"></canvas></div>
+          <div class="legend-side">
+            <div class="legend-item">
+              <span class="legend-left"><span class="legend-dot" style="background:#22C55E"></span>راضي</span>
+              <span class="legend-pct" id="dentistry-satisfied">0%</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-left"><span class="legend-dot" style="background:#EF4444"></span>غير راضي</span>
+              <span class="legend-pct" id="dentistry-notSatisfied">0%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- الطوارئ -->
+      <div class="bg-white rounded-lg shadow-md p-4">
+        <h3 class="text-lg font-semibold text-gray-800 mb-4 text-center">الطوارئ</h3>
+        <div class="chart-row">
+          <div class="relative w-36 h-36 mx-auto"><canvas id="emergencyChart"></canvas></div>
+          <div class="legend-side">
+            <div class="legend-item">
+              <span class="legend-left"><span class="legend-dot" style="background:#22C55E"></span>راضي</span>
+              <span class="legend-pct" id="emergency-satisfied">0%</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-left"><span class="legend-dot" style="background:#EF4444"></span>غير راضي</span>
+              <span class="legend-pct" id="emergency-notSatisfied">0%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- التنويم -->
+      <div class="bg-white rounded-lg shadow-md p-4">
+        <h3 class="text-lg font-semibold text-gray-800 mb-4 text-center">أقسام التنويم</h3>
+        <div class="chart-row">
+          <div class="relative w-36 h-36 mx-auto"><canvas id="inpatientChart"></canvas></div>
+          <div class="legend-side">
+            <div class="legend-item">
+              <span class="legend-left"><span class="legend-dot" style="background:#22C55E"></span>راضي</span>
+              <span class="legend-pct" id="inpatient-satisfied">0%</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-left"><span class="legend-dot" style="background:#EF4444"></span>غير راضي</span>
+              <span class="legend-pct" id="inpatient-notSatisfied">0%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+<!-- الوفيات -->
+<div class="bg-white rounded-lg shadow-md p-4">
+  <h3 class="text-lg font-semibold text-gray-800 mb-4 text-center">الوفيات</h3>
+  <div class="chart-row">
+    <div class="relative w-36 h-36 mx-auto"><canvas id="mortalityChart"></canvas></div>
+    <div class="legend-side">
+      <div class="legend-item">
+        <span class="legend-left"><span class="legend-dot" style="background:#22C55E"></span>راضي</span>
+        <span class="legend-pct" id="mortality-satisfied">0%</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-left"><span class="legend-dot" style="background:#EF4444"></span>غير راضي</span>
+        <span class="legend-pct" id="mortality-notSatisfied">0%</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+      <!-- بنك الدم -->
+      <div class="bg-white rounded-lg shadow-md p-4">
+        <h3 class="text-lg font-semibold text-gray-800 mb-4 text-center">بنك الدم</h3>
+        <div class="chart-row">
+          <div class="relative w-36 h-36 mx-auto"><canvas id="bloodBankChart"></canvas></div>
+          <div class="legend-side">
+            <div class="legend-item">
+              <span class="legend-left"><span class="legend-dot" style="background:#22C55E"></span>راضي</span>
+              <span class="legend-pct" id="bloodBank-satisfied">0%</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-left"><span class="legend-dot" style="background:#EF4444"></span>غير راضي</span>
+              <span class="legend-pct" id="bloodBank-notSatisfied">0%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- زر التصدير -->
+    <div class="flex justify-center mt-8">
+      <button id="exportReportBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-full shadow-lg flex items-center">
+        <i class="fas fa-download ml-2"></i>
+        <span data-ar="تصدير التقرير" data-en="Export Report">تصدير التقرير</span>
+      </button>
+    </div>
+
+  </div>
+<script>
+  (function () {
+    // استخدمي نفس التخزين عندك: localStorage.user يحتوي RoleID
+    function redirectByRole() {
+      const user = JSON.parse(localStorage.getItem('user') || 'null');
+      if (!user) return '/login/home.html';
+
+      const roleId = Number(user.RoleID || user.roleId);
+      if (roleId === 1) return '/superadmin/superadmin-home.html'; // سوبر أدمن
+      if (roleId === 2) return '/employee/employee-home.html';   // موظف
+      if (roleId === 3) return '/dept-admin/dept-admin.html';      // أدمن
+      return '/login/home.html'; // احتياطي
+    }
+
+    // كل روابط "الصفحة الرئيسية" الموجودة في الشريط الجانبي
+    const homeLinks = document.querySelectorAll(
+      'aside .sidebar-menu a.menu-link[href$="/login/home.html"], aside .sidebar-menu a.menu-link[data-en="Home Page"], aside .sidebar-menu a.menu-link[data-ar="الصفحة الرئيسية"]'
+    );
+
+    homeLinks.forEach(a => {
+      // خَلّي النقر يوجّه حسب الدور
+      a.addEventListener('click', (e) => {
+        e.preventDefault();
+        window.location.href = redirectByRole();
+      });
+
+      // (اختياري) عدّلي الـ href الظاهر للـ Hover/Copy
+      a.setAttribute('href', redirectByRole());
+    });
+  })();
+</script>
+  <script src="pressganey.js"></script>
+</body>
+</html>

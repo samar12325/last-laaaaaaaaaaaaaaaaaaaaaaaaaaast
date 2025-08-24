@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>الصفحة الرئيسية — سوبر أدمن</title>
+
+  <!-- خطوط مطابقة للهوم -->
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+
+  <!-- نفس ملف التنسيق -->
+  <link rel="stylesheet" href="superadmin-home.css">
+  <style>
+    /* لمسة بسيطة لتوسيط البطاقة الكبيرة */
+    .dashboard { flex-wrap: wrap; }
+    .card.full { flex-basis: 100%; }
+    .kpi-wrap { margin: 12px 40px; display: grid; grid-template-columns: repeat(5,minmax(160px,1fr)); gap: 14px; }
+    .kpi { background:#fff; border:1px solid #e5e7eb; border-radius:14px; padding:14px; box-shadow:0 4px 10px rgba(0,0,0,.04); }
+    .kpi .t{font-size:.92rem;color:#374151}
+    .kpi .v{font-weight:800;font-size:1.35rem;color:#0f172a}
+    .list-card{ background:#fff;border:1px solid #e5e7eb;border-radius:14px;padding:16px; box-shadow:0 4px 10px rgba(0,0,0,.04); margin:16px 40px 24px;}
+    .comp-table{width:100%;border-collapse:collapse;font-size:.95rem}
+    .comp-table th,.comp-table td{padding:10px 12px;border-bottom:1px solid #eee;text-align:center;white-space:nowrap}
+    .comp-table thead th{background:#f8fafc;font-weight:600;position:sticky;top:0;z-index:1}
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-content">
+      <div class="header-title" data-ar="عُــــــونَك — سوبر أدمن" data-en="AOUNAK — Super Admin">عُــــــونَك — سوبر أدمن</div>
+      <img src="/icon/hospital-logo.png" alt="شعار" class="header-logo"/>
+
+      <a href="/login/profile.html" class="profile-link">
+        <img src="/icon/patient1.png" class="profile-icon-small" alt="الملف الشخصي">
+        <span data-ar="الملف الشخصي" data-en="Profile">الملف الشخصي</span>
+      </a>
+
+      <button id="notifBtn" class="notif-btn" title="الإشعارات">
+        <svg class="notif-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 2c.7 0 1.25.56 1.25 1.25v.51A6.75 6.75 0 0 1 19 10.5v4.06l1.49 2.49c.3.5-.06 1.12-.64 1.12H4.15c-.58 0-.94-.62-.64-1.12L5 14.56V10.5A6.75 6.75 0 0 1 10.75 3.76v-.51C10.75 2.56 11.3 2 12 2zm0 20a2.75 2.75 0 0 1-2.62-2h5.24A2.75 2.75 0 0 1 12 22z"/>
+        </svg>
+        <span id="notifCount" class="notif-count" style="display:none;">0</span>
+      </button>
+
+      <button id="langToggle" class="lang-toggle-btn">
+        <img src="/icon/lang.png" class="lang-icon" alt="اللغة"/>
+        <span id="langText">العربية | English</span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <!-- كروت السوبر أدمن فقط -->
+<!-- كروت الواجهة (مطابقة للصورة) -->
+<section class="dashboard">
+  <!-- تقديم شكوى جديدة -->
+  <div class="card">
+    <img src="/icon/plus.png" alt="">
+    <h3 data-ar="تقديم شكوى جديدة" data-en="Submit New Complaint">تقديم شكوى جديدة</h3>
+    <p data-ar="قم بتسجيل شكوى طبية جديدة" data-en="Register a new medical complaint">قم بتسجيل شكوى طبية جديدة</p>
+    <a href="/New complaint/Newcomplaint.html" class="btn" data-ar="تقديم شكوى" data-en="Submit">تقديم شكوى</a>
+  </div>
+
+  <!-- متابعة الشكاوى -->
+  <div class="card">
+    <img src="/icon/clipboard.png" alt="">
+    <h3 data-ar="متابعة الشكاوى" data-en="Track Complaints">متابعة الشكاوى</h3>
+    <p data-ar="تتبع حالة شكاوك المقدمة" data-en="Track the status of your complaints">تتبع حالة شكاوك المقدمة</p>
+    <a href="/Complaints-followup/followup.html" class="btn" data-ar="متابعة الشكاوي" data-en="Track">متابعة الشكاوي</a>
+  </div>
+
+  <!-- الشكاوى العامة -->
+  <div class="card">
+    <img src="/icon/users.png" alt="">
+    <h3 data-ar="الشكاوى العامة" data-en="General Complaints">الشكاوى العامة</h3>
+    <p data-ar="استعراض الشكاوى العامة المقدمة" data-en="Browse submitted general complaints">استعراض الشكاوى العامة المقدمة</p>
+    <a href="/general complaints/general-complaints.html" class="btn" data-ar="استعراض" data-en="Browse">استعراض</a>
+  </div>
+
+  <!-- لوحة المعلومات -->
+  <div class="card">
+    <img src="/icon/chart.png" alt="">
+    <h3 data-ar="لوحة المعلومات" data-en="Analytics Dashboard">لوحة المعلومات</h3>
+    <p data-ar="إحصائيات وتحليلات الشكاوى والطلبات العامة"
+       data-en="Analytics of complaints and general requests">إحصائيات وتحليلات الشكاوى والطلبات العامة</p>
+    <a href="/DashBoard/overview.html" class="btn" data-ar="عرض التفاصيل" data-en="Details">عرض التفاصيل</a>
+  </div>
+
+  <!-- لوحة تحكم المسؤول -->
+  <div class="card">
+    <img src="/icon/gear.png" alt="">
+    <h3 data-ar="لوحة تحكم المسؤول" data-en="Admin Control Panel">لوحة تحكم المسؤول</h3>
+    <p data-ar="إدارة النظام والمستخدمين والصلاحيات" data-en="Manage system, users, and permissions">
+      إدارة النظام والمستخدمين والصلاحيات
+    </p>
+    <a href="/superadmin/superadmin.html" class="btn" data-ar="الدخول للوحة التحكم" data-en="Open Control Panel">
+      الدخول للوحة التحكم
+    </a>
+  </div>
+</section>
+
+
+    <!-- KPIs -->
+    <section class="kpi-wrap" id="kpiWrap">
+      <div class="kpi"><div class="t" data-ar="إجمالي الشكاوى" data-en="Total Complaints">إجمالي الشكاوى</div><div class="v" id="kpiTotal">—</div></div>
+      <div class="kpi"><div class="t" data-ar="المفتوحة" data-en="Open">المفتوحة</div><div class="v" id="kpiOpen">—</div></div>
+      <div class="kpi"><div class="t" data-ar="قيد المعالجة" data-en="In Progress">قيد المعالجة</div><div class="v" id="kpiWip">—</div></div>
+      <div class="kpi"><div class="t" data-ar="المغلقة" data-en="Closed">المغلقة</div><div class="v" id="kpiClosed">—</div></div>
+      <div class="kpi"><div class="t" data-ar="سجلات اليوم" data-en="Logs Today">سجلات اليوم</div><div class="v" id="kpiLogsToday">—</div></div>
+    </section>
+
+    <!-- آخر السجلات -->
+    <section class="list-card">
+      <div class="table-title" data-ar="آخر 10 سجلات نشاط" data-en="Latest 10 Activity Logs">آخر 10 سجلات نشاط</div>
+      <table class="comp-table" id="logsTable">
+        <thead>
+          <tr>
+            <th data-ar="الوقت" data-en="Time">الوقت</th>
+            <th data-ar="المستخدم" data-en="User">المستخدم</th>
+            <th data-ar="النوع" data-en="Type">النوع</th>
+            <th data-ar="الوصف" data-en="Description">الوصف</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+
+  </main>
+
+  <script src="./superadmin-home.js"></script>
+  <script>
+  (function () {
+    // استخدمي نفس التخزين عندك: localStorage.user يحتوي RoleID
+    function redirectByRole() {
+      const user = JSON.parse(localStorage.getItem('user') || 'null');
+      if (!user) return '/home/home.html';
+
+      const roleId = Number(user.RoleID || user.roleId);
+      if (roleId === 1) return '/superadmin/superadmin-home.html'; // سوبر أدمن
+      if (roleId === 2) return '/employee/employee-home.html';   // موظف
+      if (roleId === 3) return '/home/admin-home.html';      // أدمن
+      return '/home/home.html'; // احتياطي
+    }
+
+    // كل روابط "الصفحة الرئيسية" الموجودة في الشريط الجانبي
+    const homeLinks = document.querySelectorAll(
+      'aside .sidebar-menu a.menu-link[href$="/login/home.html"], aside .sidebar-menu a.menu-link[data-en="Home Page"], aside .sidebar-menu a.menu-link[data-ar="الصفحة الرئيسية"]'
+    );
+
+    homeLinks.forEach(a => {
+      // خَلّي النقر يوجّه حسب الدور
+      a.addEventListener('click', (e) => {
+        e.preventDefault();
+        window.location.href = redirectByRole();
+      });
+
+      // (اختياري) عدّلي الـ href الظاهر للـ Hover/Copy
+      a.setAttribute('href', redirectByRole());
+    });
+  })();
+</script>
+
+</body>
+</html>

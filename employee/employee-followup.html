@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>متابعة الشكاوى - الموظف</title>
+    <link rel="stylesheet" href="employee-followup.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="header-title" data-ar="عُــــــونَك" data-en="AOUNAK">عُــــــونَك</div>
+            <img src="../icon/hospital-logo.png" alt="شعار المستشفى" class="header-logo">
+            <div class="header-right">
+                <div class="notifications">
+                    <i class="fas fa-bell" id="notificationIcon"></i>
+                    <span class="notification-badge" id="notificationBadge">0</span>
+                </div>
+                <div class="user-profile">
+                    <img src="../icon/person.png" alt="صورة المستخدم" id="userAvatar">
+                    <span id="userName">اسم المستخدم</span>
+                    <div class="dropdown">
+                        <button class="dropdown-btn">
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="dropdown-content">
+                            <a href="employee-home.html">
+                                <i class="fas fa-home"></i>
+                                الصفحة الرئيسية
+                            </a>
+                            <a href="#" id="profileLink">
+                                <i class="fas fa-user"></i>
+                                الملف الشخصي
+                            </a>
+                            <a href="#" id="logoutBtn">
+                                <i class="fas fa-sign-out-alt"></i>
+                                تسجيل الخروج
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb">
+            <a href="employee-home.html">
+                <i class="fas fa-home"></i>
+                الصفحة الرئيسية
+            </a>
+            <i class="fas fa-chevron-left"></i>
+            <span>متابعة الشكاوى</span>
+        </nav>
+
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="page-title">
+                <i class="fas fa-list-alt"></i>
+                <h1>متابعة الشكاوى</h1>
+            </div>
+            <div class="page-actions">
+                <button class="btn btn-primary" id="newComplaintBtn">
+                    <i class="fas fa-plus"></i>
+                    شكوى جديدة
+                </button>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters-section">
+            <div class="filters-card">
+                <div class="filters-header">
+                    <h3>
+                        <i class="fas fa-filter"></i>
+                        تصفية النتائج
+                    </h3>
+                    <button class="btn btn-secondary btn-sm" id="clearFilters">
+                        <i class="fas fa-times"></i>
+                        مسح الفلاتر
+                    </button>
+                </div>
+                <div class="filters-content">
+                    <div class="filter-group">
+                        <label for="statusFilter">الحالة</label>
+                        <select id="statusFilter">
+                            <option value="">جميع الحالات</option>
+                            <option value="مفتوحة/جديدة">مفتوحة/جديدة</option>
+                            <option value="قيد المعالجة">قيد المعالجة</option>
+                            <option value="معلقة">معلقة</option>
+                            <option value="مكتملة">مكتملة</option>
+                            <option value="مغلقة">مغلقة</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="categoryFilter">الفئة</label>
+                        <select id="categoryFilter">
+                            <option value="">جميع الفئات</option>
+                            <option value="خدمة طبية">خدمة طبية</option>
+                            <option value="خدمة إدارية">خدمة إدارية</option>
+                            <option value="نظافة">نظافة</option>
+                            <option value="أمن وسلامة">أمن وسلامة</option>
+                            <option value="تجهيزات طبية">تجهيزات طبية</option>
+                            <option value="موظفين">موظفين</option>
+                            <option value="أخرى">أخرى</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="typeFilter">النوع</label>
+                        <select id="typeFilter">
+                            <option value="">جميع الشكاوى</option>
+                            <option value="my">شكاوىي</option>
+                            <option value="assigned">المسندة لي</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="searchInput">البحث</label>
+                        <input type="text" id="searchInput" placeholder="ابحث في العنوان أو الوصف...">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics -->
+        <div class="stats-section">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="totalCount">0</h3>
+                        <p>إجمالي الشكاوى</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-user-edit"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="myCount">0</h3>
+                        <p>شكاوىي</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-tasks"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="assignedCount">0</h3>
+                        <p>المسندة لي</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="pendingCount">0</h3>
+                        <p>قيد المعالجة</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Complaints List -->
+        <div class="complaints-section">
+            <div class="complaints-header">
+                <div class="results-info">
+                    <span id="resultsCount">0 شكوى</span>
+                </div>
+                <div class="sort-options">
+                    <label for="sortBy">ترتيب حسب:</label>
+                    <select id="sortBy">
+                        <option value="newest">الأحدث</option>
+                        <option value="oldest">الأقدم</option>
+                        <option value="title">العنوان</option>
+                        <option value="status">الحالة</option>
+                        <option value="priority">الأولوية</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="complaints-list" id="complaintsList">
+                <!-- سيتم ملء هذا القسم ديناميكياً -->
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination" id="pagination">
+                <!-- سيتم ملء هذا القسم ديناميكياً -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>جاري تحميل الشكاوى...</p>
+        </div>
+    </div>
+
+    <!-- Error Modal -->
+    <div class="modal" id="errorModal">
+        <div class="modal-content">
+            <div class="modal-header error">
+                <h3>
+                    <i class="fas fa-exclamation-triangle"></i>
+                    خطأ
+                </h3>
+                <button class="close-modal" id="closeErrorModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="errorMessage">حدث خطأ ما</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" id="closeErrorBtn">حسناً</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Complaint Details Modal -->
+    <div class="modal modal-large" id="detailsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>
+                    <i class="fas fa-file-alt"></i>
+                    تفاصيل الشكوى
+                </h3>
+                <button class="close-modal" id="closeDetailsModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="complaintDetails">
+                    <!-- سيتم ملء هذا القسم ديناميكياً -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" id="openComplaintBtn">فتح الشكوى</button>
+                <button class="btn btn-secondary" id="closeDetailsBtn">إغلاق</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="employee-followup.js"></script>
+</body>
+</html>

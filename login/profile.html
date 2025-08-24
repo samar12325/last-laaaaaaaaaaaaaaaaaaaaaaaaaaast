@@ -1,0 +1,125 @@
+n<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>الملف الشخصي - Profile</title>
+
+  <!-- خط عربي: Tajawal -->
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+
+  <!-- ملف التنسيقات -->
+  <link rel="stylesheet" href="profile.css">
+</head>
+
+<body>
+  <header class="header">
+    <div class="header-content">
+      <div class="header-title" data-ar="عُــــــونَك" data-en="AOUNAK">عُــــــونَك</div>
+      <img src="/icon/hospital-logo.png" alt="شعار المستشفى" class="header-logo">
+
+      <!-- زر اللغة -->
+      <button id="langToggle" class="lang-toggle-btn">
+        <img src="/icon/lang.png" alt="language" class="lang-icon" />
+        <span id="langText">العربية | English</span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <!-- بطاقة الملف الشخصي -->
+    <section class="profile-card">
+      <div class="card-header">
+        <h2 data-ar="بيانات الموظف" data-en="Employee Information">بيانات الموظف</h2>
+      </div>
+
+      <div class="profile-info">
+        <div class="info-row">
+          <div class="info-label" data-ar="اسم الموظف" data-en="Employee Name">اسم الموظف</div>
+          <div class="info-value" id="empName">---</div>
+        </div>
+        
+        <div class="info-row">
+          <div class="info-label" data-ar="رقم الجوال" data-en="Phone Number">رقم الجوال</div>
+          <div class="info-value" id="empPhone">---</div>
+        </div>
+        
+        <div class="info-row">
+          <div class="info-label" data-ar="رقم الهوية / الإقامة" data-en="ID / Iqama Number">رقم الهوية / الإقامة</div>
+          <div class="info-value" id="empId">---</div>
+        </div>
+        
+        <div class="info-row">
+          <div class="info-label" data-ar="رقم الموظف" data-en="Employee ID">رقم الموظف</div>
+          <div class="info-value" id="empNumber">---</div>
+        </div>
+        
+        <div class="info-row">
+          <div class="info-label" data-ar="البريد الإلكتروني" data-en="Email">البريد الإلكتروني</div>
+          <div class="info-value" id="empEmail">---</div>
+        </div>
+      </div>
+
+      <div class="profile-actions">
+        <button id="backBtn" class="btn btn-secondary" data-ar="عودة" data-en="Back">عودة</button>
+        <button id="editBtn" class="btn btn-primary" data-ar="تعديل البيانات" data-en="Edit Info">تعديل البيانات</button>
+        <button id="logoutBtn" class="btn btn-danger" data-ar="تسجيل الخروج" data-en="Logout">تسجيل الخروج</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- مودال تأكيد الخروج -->
+  <div id="logoutModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 data-ar="تأكيد الخروج" data-en="Confirm Logout">تأكيد الخروج</h3>
+        <button id="closeModal" class="close-modal">×</button>
+      </div>
+      <div class="modal-body">
+        <p id="logoutMessage" data-ar="هل أنت متأكد أنك تريد تسجيل الخروج؟" data-en="Are you sure you want to logout?">هل أنت متأكد أنك تريد تسجيل الخروج؟</p>
+      </div>
+      <div class="modal-actions">
+        <button id="cancelLogout" class="btn btn-secondary" data-ar="إلغاء" data-en="Cancel">إلغاء</button>
+        <button id="confirmLogout" class="btn btn-danger" data-ar="موافق" data-en="Confirm">موافق</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- سكربت خارجي -->
+  <script src="profile.js"></script>
+  <script>
+  (function () {
+    // استخدمي نفس التخزين عندك: localStorage.user يحتوي RoleID
+    function redirectByRole() {
+      const user = JSON.parse(localStorage.getItem('user') || 'null');
+      if (!user) return '/home/home.html';
+
+      const roleId = Number(user.RoleID || user.roleId);
+      if (roleId === 1) return '/superadmin/superadmin-home.html'; // سوبر أدمن
+      if (roleId === 2) return '/employee/employee-home.html';   // موظف
+      if (roleId === 3) return '/home/admin-home.html';      // أدمن
+      return '/home/home.html'; // احتياطي
+    }
+
+    // كل روابط "الصفحة الرئيسية" الموجودة في الشريط الجانبي
+    const homeLinks = document.querySelectorAll(
+      'aside .sidebar-menu a.menu-link[href$="/login/home.html"], aside .sidebar-menu a.menu-link[data-en="Home Page"], aside .sidebar-menu a.menu-link[data-ar="الصفحة الرئيسية"]'
+    );
+
+    homeLinks.forEach(a => {
+      // خَلّي النقر يوجّه حسب الدور
+      a.addEventListener('click', (e) => {
+        e.preventDefault();
+        window.location.href = redirectByRole();
+      });
+
+      // (اختياري) عدّلي الـ href الظاهر للـ Hover/Copy
+      a.setAttribute('href', redirectByRole());
+    });
+  })();
+</script>
+
+</body>
+</html>
