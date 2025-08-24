@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار Complaint API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .result {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            white-space: pre-wrap;
+            font-family: monospace;
+        }
+        .success { color: green; }
+        .error { color: red; }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .status.running { background: #d4edda; color: #155724; }
+        .status.stopped { background: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 اختبار Complaint API</h1>
+        
+        <div class="test-section">
+            <h3>حالة الخادم</h3>
+            <div id="serverStatus" class="status stopped">غير متصل</div>
+            <button onclick="checkServerStatus()">فحص حالة الخادم</button>
+        </div>
+
+        <div class="test-section">
+            <h3>1. اختبار Health Check</h3>
+            <button onclick="testHealth()">اختبار Health</button>
+            <div id="healthResult" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>2. اختبار جلب الأقسام</h3>
+            <button onclick="testDepartments()">اختبار /api/complaints/departments</button>
+            <div id="departmentsResult" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>3. اختبار جلب أنواع الشكاوى</h3>
+            <button onclick="testComplaintTypes()">اختبار /api/complaints/types</button>
+            <div id="typesResult" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>4. اختبار جلب التصنيفات الفرعية</h3>
+            <input type="number" id="typeIdInput" placeholder="أدخل ComplaintTypeID" value="1">
+            <button onclick="testSubTypes()">اختبار /api/complaints/subtypes/:id</button>
+            <div id="subtypesResult" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>5. اختبار صفحة تقديم الشكوى</h3>
+            <button onclick="openComplaintPage()">فتح صفحة تقديم الشكوى</button>
+            <div id="complaintPageResult" class="result"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://127.0.0.1:3001/api';
+
+        async function makeRequest(url, options = {}) {
+            try {
+                const response = await fetch(`${API_BASE_URL}${url}`, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...(options.headers || {})
+                    },
+                    ...options
+                });
+                
+                const data = await response.json();
+                return {
+                    status: response.status,
+                    ok: response.ok,
+                    data: data
+                };
+            } catch (error) {
+                return {
+                    status: 0,
+                    ok: false,
+                    data: { error: error.message }
+                };
+            }
+        }
+
+        async function checkServerStatus() {
+            const statusDiv = document.getElementById('serverStatus');
+            statusDiv.textContent = 'جاري الفحص...';
+            
+            try {
+                const response = await fetch('http://127.0.0.1:3001/health');
+                if (response.ok) {
+                    statusDiv.textContent = '✅ الخادم يعمل';
+                    statusDiv.className = 'status running';
+                } else {
+                    statusDiv.textContent = '❌ الخادم لا يستجيب';
+                    statusDiv.className = 'status stopped';
+                }
+            } catch (error) {
+                statusDiv.textContent = '❌ الخادم غير متصل';
+                statusDiv.className = 'status stopped';
+            }
+        }
+
+        async function testHealth() {
+            const result = document.getElementById('healthResult');
+            result.textContent = 'جاري الاختبار...';
+            
+            const response = await makeRequest('/health');
+            
+            if (response.ok) {
+                result.innerHTML = `<span class="success">✅ نجح الاختبار!</span>\n\nالاستجابة:\n${JSON.stringify(response.data, null, 2)}`;
+            } else {
+                result.innerHTML = `<span class="error">❌ فشل الاختبار!</span>\n\nالحالة: ${response.status}\nالاستجابة:\n${JSON.stringify(response.data, null, 2)}`;
+            }
+        }
+
+        async function testDepartments() {
+            const result = document.getElementById('departmentsResult');
+            result.textContent = 'جاري الاختبار...';
+            
+            const response = await makeRequest('/complaints/departments');
+            
+            if (response.ok) {
+                result.innerHTML = `<span class="success">✅ نجح الاختبار!</span>\n\nالاستجابة:\n${JSON.stringify(response.data, null, 2)}`;
+            } else {
+                result.innerHTML = `<span class="error">❌ فشل الاختبار!</span>\n\nالحالة: ${response.status}\nالاستجابة:\n${JSON.stringify(response.data, null, 2)}`;
+            }
+        }
+
+        async function testComplaintTypes() {
+            const result = document.getElementById('typesResult');
+            result.textContent = 'جاري الاختبار...';
+            
+            const response = await makeRequest('/complaints/types');
+            
+            if (response.ok) {
+                result.innerHTML = `<span class="success">✅ نجح الاختبار!</span>\n\nالاستجابة:\n${JSON.stringify(response.data, null, 2)}`;
+            } else {
+                result.innerHTML = `<span class="error">❌ فشل الاختبار!</span>\n\nالحالة: ${response.status}\nالاستجابة:\n${JSON.stringify(response.data, null, 2)}`;
+            }
+        }
+
+        async function testSubTypes() {
+            const result = document.getElementById('subtypesResult');
+            const typeId = document.getElementById('typeIdInput').value;
+            
+            if (!typeId) {
+                result.innerHTML = '<span class="error">❌ يرجى إدخال ComplaintTypeID</span>';
+                return;
+            }
+            
+            result.textContent = 'جاري الاختبار...';
+            
+            const response = await makeRequest(`/complaints/subtypes/${typeId}`);
+            
+            if (response.ok) {
+                result.innerHTML = `<span class="success">✅ نجح الاختبار!</span>\n\nالاستجابة:\n${JSON.stringify(response.data, null, 2)}`;
+            } else {
+                result.innerHTML = `<span class="error">❌ فشل الاختبار!</span>\n\nالحالة: ${response.status}\nالاستجابة:\n${JSON.stringify(response.data, null, 2)}`;
+            }
+        }
+
+        function openComplaintPage() {
+            const result = document.getElementById('complaintPageResult');
+            result.innerHTML = '<span class="success">✅ فتح صفحة تقديم الشكوى...</span>';
+            
+            // فتح الصفحة في نافذة جديدة
+            window.open('New complaint/Newcomplaint.html', '_blank');
+        }
+
+        // اختبار تلقائي عند تحميل الصفحة
+        window.onload = function() {
+            checkServerStatus();
+            testHealth();
+        };
+    </script>
+</body>
+</html>

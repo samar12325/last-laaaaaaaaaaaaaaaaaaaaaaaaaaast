@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار Employee API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .result {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            white-space: pre-wrap;
+            font-family: monospace;
+        }
+        .success { color: green; }
+        .error { color: red; }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        input {
+            padding: 8px;
+            margin: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 300px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 اختبار Employee API</h1>
+        
+        <div class="test-section">
+            <h3>1. اختبار Health Check</h3>
+            <button onclick="testHealth()">اختبار Health</button>
+            <div id="healthResult" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>2. اختبار Employee Profile (بدون token)</h3>
+            <button onclick="testEmployeeProfile()">اختبار Profile</button>
+            <div id="profileResult" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>3. اختبار Employee Profile (مع token)</h3>
+            <input type="text" id="tokenInput" placeholder="أدخل JWT token هنا">
+            <button onclick="testEmployeeProfileWithToken()">اختبار Profile مع Token</button>
+            <div id="profileTokenResult" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>4. اختبار Employee Complaints</h3>
+            <input type="text" id="complaintsTokenInput" placeholder="أدخل JWT token هنا">
+            <button onclick="testEmployeeComplaints()">اختبار Complaints</button>
+            <div id="complaintsResult" class="result"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://127.0.0.1:3001/api';
+
+        async function makeRequest(url, options = {}) {
+            try {
+                const response = await fetch(`${API_BASE_URL}${url}`, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...(options.headers || {})
+                    },
+                    ...options
+                });
+                
+                const data = await response.json();
+                return {
+                    status: response.status,
+                    ok: response.ok,
+                    data: data
+                };
+            } catch (error) {
+                return {
+                    status: 0,
+                    ok: false,
+                    data: { error: error.message }
+                };
+            }
+        }
+
+        async function testHealth() {
+            const result = document.getElementById('healthResult');
+            result.textContent = 'جاري الاختبار...';
+            
+            const response = await makeRequest('/health');
+            
+            if (response.ok) {
+                result.innerHTML = `<span class="success">✅ نجح الاختبار!</span>\n\nالاستجابة:\n${JSON.stringify(response.data, null, 2)}`;
+            } else {
+                result.innerHTML = `<span class="error">❌ فشل الاختبار!</span>\n\nالحالة: ${response.status}\nالاستجابة:\n${JSON.stringify(response.data, null, 2)}`;
+            }
+        }
+
+        async function testEmployeeProfile() {
+            const result = document.getElementById('profileResult');
+            result.textContent = 'جاري الاختبار...';
+            
+            const response = await makeRequest('/employee/profile');
+            
+            if (response.status === 401) {
+                result.innerHTML = `<span class="success">✅ الـ endpoint يعمل! (يتوقع token)</span>\n\nالحالة: ${response.status}\nالاستجابة:\n${JSON.stringify(response.data, null, 2)}`;
+            } else if (response.ok) {
+                result.innerHTML = `<span class="success">✅ نجح الاختبار!</span>\n\nالاستجابة:\n${JSON.stringify(response.data, null, 2)}`;
+            } else {
+                result.innerHTML = `<span class="error">❌ فشل الاختبار!</span>\n\nالحالة: ${response.status}\nالاستجابة:\n${JSON.stringify(response.data, null, 2)}`;
+            }
+        }
+
+        async function testEmployeeProfileWithToken() {
+            const result = document.getElementById('profileTokenResult');
+            const token = document.getElementById('tokenInput').value.trim();
+            
+            if (!token) {
+                result.innerHTML = '<span class="error">❌ يرجى إدخال JWT token</span>';
+                return;
+            }
+            
+            result.textContent = 'جاري الاختبار...';
+            
+            const response = await makeRequest('/employee/profile', {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            
+            if (response.ok) {
+                result.innerHTML = `<span class="success">✅ نجح الاختبار!</span>\n\nالاستجابة:\n${JSON.stringify(response.data, null, 2)}`;
+            } else {
+                result.innerHTML = `<span class="error">❌ فشل الاختبار!</span>\n\nالحالة: ${response.status}\nالاستجابة:\n${JSON.stringify(response.data, null, 2)}`;
+            }
+        }
+
+        async function testEmployeeComplaints() {
+            const result = document.getElementById('complaintsResult');
+            const token = document.getElementById('complaintsTokenInput').value.trim();
+            
+            if (!token) {
+                result.innerHTML = '<span class="error">❌ يرجى إدخال JWT token</span>';
+                return;
+            }
+            
+            result.textContent = 'جاري الاختبار...';
+            
+            const response = await makeRequest('/employee/complaints', {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            
+            if (response.ok) {
+                result.innerHTML = `<span class="success">✅ نجح الاختبار!</span>\n\nالاستجابة:\n${JSON.stringify(response.data, null, 2)}`;
+            } else {
+                result.innerHTML = `<span class="error">❌ فشل الاختبار!</span>\n\nالحالة: ${response.status}\nالاستجابة:\n${JSON.stringify(response.data, null, 2)}`;
+            }
+        }
+
+        // اختبار تلقائي عند تحميل الصفحة
+        window.onload = function() {
+            testHealth();
+        };
+    </script>
+</body>
+</html>
