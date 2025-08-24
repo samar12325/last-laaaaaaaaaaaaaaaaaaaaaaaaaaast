@@ -11,36 +11,29 @@
     <!-- Header -->
     <header class="header">
         <div class="header-content">
-            <div class="header-title" data-ar="عُــــــونَك" data-en="AOUNAK">عُــــــونَك</div>
-            <img src="../icon/hospital-logo.png" alt="شعار المستشفى" class="header-logo">
+            <!-- الجانب الأيسر: شعار عونك -->
+            <div class="header-left">
+                <div class="header-title" data-ar="عُــــــونَك - موظف" data-en="AOUNAK - Employee">عُــــــونَك - موظف</div>
+            </div>
+            
+            <!-- الوسط: شعار المستشفى -->
+            <div class="header-center">
+                <img src="../icon/hospital-logo.png" alt="شعار المستشفى" class="header-logo">
+            </div>
+            
+            <!-- الجانب الأيمن: الملف الشخصي وزر اللغة -->
             <div class="header-right">
-                <div class="notifications">
-                    <i class="fas fa-bell" id="notificationIcon"></i>
-                    <span class="notification-badge" id="notificationBadge">0</span>
-                </div>
-                <div class="user-profile">
-                    <img src="../icon/person.png" alt="صورة المستخدم" id="userAvatar">
-                    <span id="userName">اسم المستخدم</span>
-                    <div class="dropdown">
-                        <button class="dropdown-btn">
-                            <i class="fas fa-chevron-down"></i>
-                        </button>
-                        <div class="dropdown-content">
-                            <a href="employee-home.html">
-                                <i class="fas fa-home"></i>
-                                الصفحة الرئيسية
-                            </a>
-                            <a href="#" id="profileLink">
-                                <i class="fas fa-user"></i>
-                                الملف الشخصي
-                            </a>
-                            <a href="#" id="logoutBtn">
-                                <i class="fas fa-sign-out-alt"></i>
-                                تسجيل الخروج
-                            </a>
-                        </div>
-                    </div>
-                </div>
+                <!-- زر الملف الشخصي -->
+                <a href="../login/profile.html" class="profile-link" id="profileLink">
+                    <img src="../icon/person.png" alt="profile" class="profile-icon-small">
+                    <span>الملف الشخصي</span>
+                </a>
+                
+                <!-- زر اللغة -->
+                <button id="langToggle" class="lang-toggle-btn">
+                    <img src="../icon/lang.png" alt="language" class="lang-icon" />
+                    <span id="langText">العربية | English</span>
+                </button>
             </div>
         </div>
     </header>

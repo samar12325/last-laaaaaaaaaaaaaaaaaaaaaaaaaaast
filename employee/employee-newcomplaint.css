@@ -11,137 +11,78 @@ body {
   background-color: white;
   padding: 15px 30px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-  position: sticky;
-  top: 0;
-  z-index: 1000;
 }
 
 .header-content {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  max-width: 1200px;
-  margin: 0 auto;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+}
+
+.header-center {
+  flex: 1;
+  text-align: center;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.header-logo {
+  height: 45px;
 }
 
 .header-title {
   font-size: 24px;
   font-weight: bold;
   color: #1e88e5;
+  margin-right: 0;
 }
 
-.header-logo { 
-  height: 45px;
-}
-
-.header-right {
-  display: flex;
-  align-items: center;
-  gap: 2rem;
-}
-
-.notifications {
-  position: relative;
-  cursor: pointer;
-}
-
-.notifications i {
-  font-size: 1.5rem;
-  color: #666;
-  transition: color 0.3s ease;
-}
-
-.notifications:hover i {
-  color: #1e88e5;
-}
-
-.notification-badge {
-  position: absolute;
-  top: -8px;
-  right: -8px;
-  background: #dc2626;
-  color: white;
-  border-radius: 50%;
-  width: 20px;
-  height: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.75rem;
-  font-weight: bold;
-}
-
-.user-profile {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  position: relative;
-}
-
-.user-profile img {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-.user-profile span {
-  color: #333;
-  font-weight: 500;
-}
-
-.dropdown {
-  position: relative;
-}
-
-.dropdown-btn {
-  background: none;
+/* زر اللغة */
+.lang-toggle-btn {
+  background-color: #3686cbbc;
+  color: #ffffff;
   border: none;
-  cursor: pointer;
-  color: #666;
-  font-size: 1rem;
-  padding: 0.5rem;
-  border-radius: 4px;
-  transition: background-color 0.3s ease;
-}
-
-.dropdown-btn:hover {
-  background-color: #f5f5f5;
-}
-
-.dropdown-content {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  background: white;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-  border-radius: 8px;
-  min-width: 200px;
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(-10px);
-  transition: all 0.3s ease;
-}
-
-.dropdown:hover .dropdown-content {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0);
-}
-
-.dropdown-content a {
+  border-radius: 12px;
+  padding: 8px 16px;
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 1rem;
-  color: #333;
-  text-decoration: none;
+  gap: 10px;
+  font-size: 14px;
+  cursor: pointer;
   transition: background-color 0.3s ease;
 }
+.lang-toggle-btn:hover { background-color: #1565c0; }
+.lang-icon { width: 20px; height: 20px; }
 
-.dropdown-content a:hover {
-  background-color: #f8f9fa;
+/* زر الملف الشخصي */
+.profile-link {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #fff;
+  padding: 6px 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  text-decoration: none;
+  color: #0f172a;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: background 0.2s;
+  margin-right: auto;
 }
+.profile-link:hover { background: #f3f4f6; }
+.profile-icon-small { width: 22px; height: 22px; object-fit: contain; }
+
+
 
 /* Main Content */
 .main-content {
@@ -501,6 +442,82 @@ body {
   color: #666;
   font-size: 1rem;
   margin: 0;
+}
+
+/* Notifications Panel */
+.notifications-panel {
+  position: fixed;
+  top: 0;
+  right: -400px;
+  width: 400px;
+  height: 100vh;
+  background: #fff;
+  box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+  transition: right 0.3s ease;
+  z-index: 2000;
+}
+
+.notifications-panel.open {
+  right: 0;
+}
+
+.notifications-header {
+  background: linear-gradient(135deg, #1565c0, #42a5f5);
+  color: white;
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.notifications-header h3 {
+  margin: 0;
+}
+
+.close-notifications {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 1.2rem;
+}
+
+.notifications-list {
+  padding: 1rem;
+  max-height: calc(100vh - 80px);
+  overflow-y: auto;
+}
+
+.notification-item {
+  padding: 1rem;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.notification-item:hover {
+  background-color: #f8f9fa;
+}
+
+.notification-item.unread {
+  background-color: #e3f2fd;
+}
+
+.notification-title {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.notification-message {
+  color: #666;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.notification-time {
+  color: #999;
+  font-size: 0.8rem;
 }
 
 /* Modal Styles */

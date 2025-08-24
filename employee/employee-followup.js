@@ -567,7 +567,7 @@ const initEventListeners = () => {
     // Profile and logout
     elements.profileLink.addEventListener('click', (e) => {
         e.preventDefault();
-        window.location.href = 'employee-profile.html';
+        window.location.href = '../login/profile.html';
     });
     
     elements.logoutBtn.addEventListener('click', (e) => {
